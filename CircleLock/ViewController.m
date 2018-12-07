@@ -19,14 +19,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    OQCircleProgressView *progressView = [[OQCircleProgressView alloc] initWithRadius:100];
-    progressView.center = CGPointMake(200, 200);
-//    progressView.progress = 0.35;
-    [self.view addSubview:progressView];
-    
-    
-    
-}
+    OQCircleProgressView *circleProgressView = [[OQCircleProgressView alloc] initWithRadius:100];
+    circleProgressView.frame = CGRectMake(100, 100, 200, 200);
+    [self.view addSubview:circleProgressView];
 
+}
 
 @end

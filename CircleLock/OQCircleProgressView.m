@@ -7,33 +7,17 @@
 //
 
 #import "OQCircleProgressView.h"
-//#import "PPCounter.h"
 
 static const CGFloat kCircleWidth = 8.0;
 
 #define kBackColor [UIColor grayColor]
 #define kProgressColor [UIColor blueColor]
 
-@interface RightView : UIView
-
-@end
-
-@implementation RightView
-
-//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-//    NSLog(@"RightView--hitTest");
-//    return nil;
-//}
-
-@end
-
 @interface OQCircleProgressView ()
 
 @property (nonatomic, strong) CAShapeLayer *backLayer;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
-@property (nonatomic, strong) UILabel *progressLabel;
 @property (nonatomic, strong) UIView *touchView;
-@property (nonatomic, assign) CGFloat last;
 @property (nonatomic, assign) BOOL canuse;
 
 @end
@@ -63,10 +47,6 @@ static const CGFloat kCircleWidth = 8.0;
     self.touchView.center = CGPointMake(self.frame.size.width * 0.5, kCircleWidth * 0.5);
     self.touchView.backgroundColor = [UIColor redColor];
     [self addSubview:_touchView];
-    
-//    UIView *view = [[RightView alloc] initWithFrame:CGRectMake(self.bounds.size.width * 0.5, 0, self.bounds.size.width * 0.5, self.bounds.size.height)];
-//    [self addSubview:view];
-//    view.backgroundColor = [UIColor yellowColor];
     
     [self addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)]];
     
@@ -98,7 +78,6 @@ static const CGFloat kCircleWidth = 8.0;
             break;
         default: {
             if (self.progress < 0.99) {
-                self.last = 0;
                 [self caculateProgressWithPoint:CGPointMake(self.frame.size.width * 0.5, kCircleWidth * 0.5)];
             }
         }
@@ -121,7 +100,6 @@ static const CGFloat kCircleWidth = 8.0;
 
     NSLog(@"touchesEnded");
     if (self.progress < 0.99) {
-        self.last = 0;
         [self caculateProgressWithPoint:CGPointMake(self.frame.size.width * 0.5, kCircleWidth * 0.5)];
     }
 }
@@ -212,18 +190,10 @@ static const CGFloat kCircleWidth = 8.0;
 
 - (void)startCircleAnimationWithDuration:(CGFloat)duration toValue:(CGFloat)toValue {
     
-    CABasicAnimation *progressAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    progressAnimation.duration = duration;
-    progressAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
-    progressAnimation.repeatCount = 1;
-    progressAnimation.fromValue = @(self.last);
-    progressAnimation.toValue = @(toValue);
-    progressAnimation.byValue = @(toValue - self.last);
-    progressAnimation.fillMode = kCAFillModeForwards;
-    progressAnimation.removedOnCompletion = NO;
-    [self.progressLayer addAnimation:progressAnimation forKey:@"progressAnimation"];
-    
-    self.last = toValue;
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    self.progressLayer.strokeEnd = toValue;
+    [CATransaction commit];
 }
 
 @end
